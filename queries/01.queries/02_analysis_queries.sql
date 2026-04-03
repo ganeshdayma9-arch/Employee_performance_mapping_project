@@ -1,0 +1,52 @@
+-- Basic selection
+SELECT EMP_ID, FIRST_NAME, LAST_NAME, GENDER, DEPT
+FROM emp_record_table;
+
+-- Rating filters
+SELECT * FROM emp_record_table WHERE EMP_RATING <2;
+SELECT * FROM emp_record_table WHERE EMP_RATING >4;
+SELECT * FROM emp_record_table WHERE EMP_RATING BETWEEN 2 AND 4;
+
+-- Full name for Finance dept
+SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) AS NAME
+FROM emp_record_table
+WHERE DEPT = 'Finance';
+
+-- Employees reporting to manager
+SELECT 
+    m.EMP_ID,
+    m.FIRST_NAME,
+    m.LAST_NAME,
+    COUNT(e.EMP_ID) AS NUMBER_OF_REPORTERS
+FROM emp_record_table m
+JOIN emp_record_table e 
+ON m.EMP_ID = e.MANAGER_ID
+GROUP BY m.EMP_ID, m.FIRST_NAME, m.LAST_NAME;
+
+SELECT * FROM emp_record_table WHERE DEPT = 'Healthcare'
+UNION
+SELECT * FROM emp_record_table WHERE DEPT = 'Finance';
+
+SELECT EMP_ID,FIRST_NAME,DEPT,EMP_RATING,
+MAX(EMP_RATING) OVER (PARTITION BY DEPT) AS MAX_DEPT_RATING
+FROM emp_record_table;
+
+SELECT EMP_ID,FIRST_NAME,EXP,
+RANK() OVER (ORDER BY EXP DESC) AS EXP_RANK
+FROM emp_record_table;
+
+SELECT ROLE, MIN(SALARY), MAX(SALARY)
+FROM emp_record_table
+GROUP BY ROLE;
+
+SELECT EMP_ID, FIRST_NAME, LAST_NAME, EXP
+FROM emp_record_table
+WHERE EXP > 10;
+
+SELECT EMP_ID, FIRST_NAME, SALARY, EMP_RATING,
+(0.05 * SALARY * EMP_RATING) AS BONUS
+FROM emp_record_table;
+
+SELECT CONTINENT, COUNTRY, AVG(SALARY)
+FROM emp_record_table
+GROUP BY CONTINENT, COUNTRY;
